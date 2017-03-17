@@ -1,0 +1,1 @@
+python -i qxj_svr.py
