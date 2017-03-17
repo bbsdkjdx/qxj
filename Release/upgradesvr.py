@@ -2,7 +2,7 @@ import rpc
 import binascii
 import os
 
-svr=rpc.RpcSvr(ip='127.0.0.1',port=9000)
+svr=rpc.RpcSvr(ip='0.0.0.0',port=9000)
 
 fns=list(os.walk('upgrades'))[0][2]
 datas=dict()

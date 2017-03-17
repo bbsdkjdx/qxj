@@ -1,5 +1,5 @@
 import rpc
-svr=rpc.RpcSvr(ip='127.0.0.1')
+svr=rpc.RpcSvr(ip='0.0.0.0')
 
 
 def encrypt(s):

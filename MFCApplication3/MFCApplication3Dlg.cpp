@@ -354,7 +354,7 @@ void CMFCApplication3Dlg::OnTimer(UINT_PTR nIDEvent)
 		OnRefresh();
 	}
 
-	if (nIDEvent=600)
+	if (nIDEvent==600)
 	{
 		char buf[100];
 		sprintf_s(buf, "agent.exe -c \"import upgrade\" %d", GetCurrentProcessId());

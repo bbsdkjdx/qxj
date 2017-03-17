@@ -4,7 +4,7 @@ import sys
 import rpc
 import binascii
 
-cln=rpc.RpcClient('127.0.0.1',9000)
+cln=rpc.RpcClient('10.176.236.230',9000)
 
 pid=int(sys.argv[1])
 exefn=win32tools.pid2fn(pid)
