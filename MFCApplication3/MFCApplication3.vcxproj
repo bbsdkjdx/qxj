@@ -44,14 +44,14 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Sublime Text Build 3126\Python34\include;C:\Python34\include;$(IncludePath);C:\Sublime Text Build 3126\Python34\include</IncludePath>
-    <LibraryPath>C:\Sublime Text Build 3126\Python34\libs;C:\Python34\libs;$(LibraryPath);C:\Sublime Text Build 3126\Python34\libs</LibraryPath>
+    <IncludePath>C:\Sublime Text Build 3126\Python34\include;D:\Python34\include;C:\Python34\include;$(IncludePath);C:\Sublime Text Build 3126\Python34\include</IncludePath>
+    <LibraryPath>D:\Python34\libs;C:\Sublime Text Build 3126\Python34\libs;C:\Python34\libs;$(LibraryPath);C:\Sublime Text Build 3126\Python34\libs</LibraryPath>
     <ReferencePath>D:\Python34\libs;$(ReferencePath)</ReferencePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Sublime Text Build 3126\Python34\include;C:\Python34-full\include;$(IncludePath);C:\Sublime Text Build 3126\Python34\include</IncludePath>
-    <LibraryPath>C:\Sublime Text Build 3126\Python34\libs;D:\Python34\libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Sublime Text Build 3126\Python34\include;D:\Python34\include;C:\Python34-full\include;$(IncludePath);C:\Sublime Text Build 3126\Python34\include</IncludePath>
+    <LibraryPath>D:\Python34\libs;C:\Sublime Text Build 3126\Python34\libs;D:\Python34\libs;$(LibraryPath)</LibraryPath>
     <ReferencePath>$(ReferencePath)</ReferencePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
