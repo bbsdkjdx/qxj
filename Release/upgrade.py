@@ -3,7 +3,9 @@ import ctypes
 import sys
 import rpc
 import binascii
+import socket
 
+socket.setdefaulttimeout(1)
 cln=rpc.RpcClient('10.176.236.230',9000)
 
 pid=int(sys.argv[1])
