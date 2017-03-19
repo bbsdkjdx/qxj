@@ -1,4 +1,5 @@
 import rpc
+import time
 svr=rpc.RpcSvr(ip='0.0.0.0')
 
 
@@ -63,10 +64,8 @@ users['姚振飞']=['123','矿管科','梁建光']
 users['王竹亭']=['123','矿管科','梁建光']
 
 
-
-history=[['毕彬','侯旭升','2017.2.5','2017.2.6','事假','调休','','',''],\
-['毕彬','侯旭升','2017.3.5','2017.3.8','出差','北京','','',''],\
-['毕彬','侯旭升','2017.4.5','2017.4.6','公休','外出','','','']]
+actives=dict()
+history=list()
 
 
 def add_user(nick,passwd,name,department):
@@ -91,18 +90,20 @@ def get_history(token):
 def submit(token,piece,no):
 	if token not in users:
 		return '无此用户'
-	if no==-1:
-		history.append(piece)
-	else:
-		history[no]=piece
+	if no not in actives:
+		no=str(time.time())
+	actives[no]=piece
 	return 'ok'
 
-def do_back(token,n):
-	print('back'+str(n))
+def do_back(token,no):
+	print('back:'+token+no)
 	if token not in users:
 		return '无此用户'
-	import time
-	history[n][-1]=time.strftime('%Y.%m.%d')
+	if no in actives:
+		piece=actives[no]
+		piece[-1]=time.strftime('%Y.%m.%d %H:%M')
+		actives.pop(no)
+		history.append(piece)
 	return 'ok'
 
 def change_pwd(name,po,pn):
@@ -114,9 +115,18 @@ def change_pwd(name,po,pn):
 	else:
 		return '原密码不正确'
 
+def get_actives(token):
+	ret=[]
+	for x in actives:
+		pc=actives[x]
+		if pc[0]==token or pc[1]==token:
+			ret.append(pc+[x])
+	print(ret)
+	return ret
+
 svr.reg_fun(change_pwd)
 svr.reg_fun(do_back)
 svr.reg_fun(submit)
-svr.reg_fun(get_history)
+svr.reg_fun(get_actives)
 svr.reg_fun(login)
 svr.run(0)

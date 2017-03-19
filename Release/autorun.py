@@ -6,7 +6,7 @@ svr_ip='127.0.0.1'
 login_port=8000
 cln=rpc.RpcClient(svr_ip,login_port)
 token=''
-history=[]
+actives=[]
 def can_run():
 	mutex=ctypes.windll.kernel32.CreateMutexW(0,0,'huancuiguotuqingxiaojia')
 	if mutex==0:
@@ -87,15 +87,15 @@ def do_login(x,y):
 
 order=['待您审批','待领导审批','已批准','已销假','未批准']
 
-def refresh_history(x,y):
-	global history
+def refresh_actives(x,y):
+	global actives
 	try:
-		history=cln.get_history(token)
+		actives=cln.get_actives(token)
 		__main__.stack__[0]=''
 	except:
 		__main__.stack__[0]='offline'
 		return
-	for x in history:
+	for x in actives:
 		if x[8]!='':
 			sta='已销假'
 		else:
@@ -104,14 +104,15 @@ def refresh_history(x,y):
 			else:
 				sta='已批准' if x[6]=='是' else '未批准'
 		x.append(sta)
-	history.sort(key=lambda x:order.index(x[-1]))
+	actives.sort(key=lambda x:order.index(x[-1]))
 
-	for n,x in enumerate(history):
-		__main__.exe_fun__['append_history'](n,x[0],x[1],x[2],x[-1],x[-2])#-1 is sta,-2 is server history number.
+	for n,x in enumerate(actives):
+		#__main__.msgbox(x[-2])
+		__main__.exe_fun__['append_actives'](n,x[0],x[1],x[2],x[-1],x[-2])#-1 is sta,-2 is server actives number.
 
-def get_history_detail(x,y):
-	L=len(history[0])
-	__main__.stack__[:L]=history[x]
+def get_actives_detail(x,y):
+	L=len(actives[0])
+	__main__.stack__[:L]=actives[x]
 	#__main__.stack__[2]=ctime_atoi(__main__.stack__[2])
 	#__main__.stack__[3]=ctime_atoi(__main__.stack__[3])
 
@@ -135,7 +136,8 @@ def change_pwd(x,y):
 
 
 def do_back(x,y):
-	__main__.stack__[0]=cln.do_back(token,x)
+	#__main__.msgbox(token+__main__.stack__[0])
+	__main__.stack__[0]=cln.do_back(token,__main__.stack__[0])
 
 def init_dialog(x,y):
 	__main__.py_fun__['on_timer'] =on_timer
@@ -145,12 +147,12 @@ def init_dialog(x,y):
 	__main__.py_fun__['on_tray_rdbclk']=on_tray_rbtnup
 	__main__.py_fun__['on_clipboard_change']=on_cb_chg
 	__main__.py_fun__['login']=do_login
-	__main__.py_fun__['refresh_history']=refresh_history
+	__main__.py_fun__['refresh_actives']=refresh_actives
 	__main__.py_fun__['submit']=submit
 	__main__.py_fun__['get_log_info']=get_log_info
 	__main__.py_fun__['do_back']=do_back
 	__main__.py_fun__['change_pwd']=change_pwd
-	__main__.py_fun__['get_history_detail']=get_history_detail
+	__main__.py_fun__['get_actives_detail']=get_actives_detail
 __main__.py_fun__['on_init_dialog']=init_dialog	
 
 def encrypt(s):

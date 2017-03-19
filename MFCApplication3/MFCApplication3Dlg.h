@@ -76,7 +76,7 @@ public:
 	CEdit m_proposer;
 	CEdit m_approver;
 	CDateTimeCtrl m_date_start;
-	CDateTimeCtrl m_date_stop;
+	CDateTimeCtrl m_time_start;
 	CComboBox m_type;
 	CEdit m_reason;
 	CComboBox m_allow;
@@ -96,4 +96,7 @@ public:
 	bool m_need_notify;
 
 //	int SelectHistory(int idx);
+	CComboBox m_hours;
+	void SetCtrlTime(WCHAR* s_time);
+	CString GetCtrlTime();
 };

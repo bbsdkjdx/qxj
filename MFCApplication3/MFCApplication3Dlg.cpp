@@ -73,15 +73,15 @@ void block_message(bool blk)
 	}
 }
 
-void append_history(int n,WCHAR *un1, WCHAR *un2, WCHAR *leave, WCHAR *status, int idx)
+void append_actives(int n,WCHAR *un1, WCHAR *un2, WCHAR *leave, WCHAR *status, WCHAR *id)
 {
 	if (!g_p_main_dlg)return;
 	g_p_main_dlg->m_history.InsertItem(n,un1);
 	g_p_main_dlg->m_history.SetItemText(n, 1, un2);
 	g_p_main_dlg->m_history.SetItemText(n, 2, leave);
 	g_p_main_dlg->m_history.SetItemText(n, 3, status);
-	g_p_main_dlg->m_history.SetItemData(n, idx);
-	
+	g_p_main_dlg->m_history.SetItemText(n, 4, id);
+
 	CString sta(_T("待您审批"));
 	if (g_p_main_dlg && sta==status)
 	{
@@ -115,7 +115,7 @@ void CMFCApplication3Dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT3, m_proposer);
 	DDX_Control(pDX, IDC_EDIT4, m_approver);
 	DDX_Control(pDX, IDC_DATETIMEPICKER1, m_date_start);
-	DDX_Control(pDX, IDC_DATETIMEPICKER3, m_date_stop);
+	DDX_Control(pDX, IDC_DATETIMEPICKER3, m_time_start);
 	DDX_Control(pDX, IDC_COMBO2, m_type);
 	DDX_Control(pDX, IDC_EDIT5, m_reason);
 	DDX_Control(pDX, IDC_COMBO1, m_allow);
@@ -123,6 +123,7 @@ void CMFCApplication3Dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BUTTON3, m_btn_submit);
 	DDX_Control(pDX, IDC_BUTTON4, m_btn_back);
 	DDX_Text(pDX, IDC_EDIT2, m_name);
+	DDX_Control(pDX, IDC_COMBO5, m_hours);
 }
 
 const UINT WM_TaskbarRestart = RegisterWindowMessage(TEXT("TaskbarCreated"));
@@ -197,7 +198,7 @@ BOOL CMFCApplication3Dlg::OnInitDialog()
 	REG_EXE_FUN(listen_clipboard, "#l", "void(bool enable)");
 	REG_EXE_FUN(set_tray_icon, "lS", "bool(wchar* fn_ico)");
 	REG_EXE_FUN(block_message, "#l", "block_message(bool blk)");
-	REG_EXE_FUN(append_history, "#lSSSSl", "append_history(int n,WCHAR *un1, WCHAR *un2, WCHAR *leave, WCHAR *status,int idx)");
+	REG_EXE_FUN(append_actives, "#lSSSSS", "append_actives(int n,WCHAR *un1, WCHAR *un2, WCHAR *leave, WCHAR *status,WCHAR* id)");
 
 	//list control set
 	RECT rct;
@@ -210,7 +211,8 @@ BOOL CMFCApplication3Dlg::OnInitDialog()
 	m_history.InsertColumn(0, _T("请假人"), 0, len/4-10);
 	m_history.InsertColumn(1, _T("批假人"), 0, len/4-10);
 	m_history.InsertColumn(2, _T("离岗时间"), 0, len/4);
-	m_history.InsertColumn(4, _T("状态"), 0, len/4);
+	m_history.InsertColumn(4, _T("状态"), 0, len / 4);
+	m_history.InsertColumn(5, _T(""), 0, 0);
 
 	PySendMsg("on_init_dialog", 0, 0);
 
@@ -462,7 +464,7 @@ void CMFCApplication3Dlg::OnRefresh()
 		return;
 	}
 	m_need_notify = 0;
-	PySendMsg("refresh_history", 0, 0);
+	PySendMsg("refresh_actives", 0, 0);
 	
 	CString ofln(_T("offline"));
 	if (ofln==PyGetStr(0))
@@ -573,8 +575,8 @@ void CMFCApplication3Dlg::ShowDetail()
 
 	CString s_proposer;
 	CString s_approver;
-	CTime t1 = CTime::GetCurrentTime();
-	CTime t2 = CTime::GetCurrentTime();
+	CString s_time=_T("2017.1.1 0:0");
+	CString s_hours;
 	CString s_type;
 	CString s_reason;
 	CString s_allow;
@@ -582,11 +584,11 @@ void CMFCApplication3Dlg::ShowDetail()
 	CString s_backed;// = PyGetStr(8);
 	if (nItem>-1)
 	{
-		PySendMsg("get_history_detail", nItem, 0);
+		PySendMsg("get_actives_detail", nItem, 0);
 		s_proposer = PyGetStr(0);
 		s_approver = PyGetStr(1);
-		t1 = CtimeFromStr(PyGetStr(2));
-		t2 = CtimeFromStr(PyGetStr(3));
+		s_time = PyGetStr(2);
+		s_hours = PyGetStr(3);
 		s_type = PyGetStr(4);
 		s_reason = PyGetStr(5);
 		s_allow = PyGetStr(6);
@@ -595,8 +597,8 @@ void CMFCApplication3Dlg::ShowDetail()
 	}
 	m_proposer.SetWindowTextW(s_proposer);//proposer
 	m_approver.SetWindowTextW(s_approver);//approver
-	m_date_start.SetTime(&t1);
-	m_date_stop.SetTime(&t2);
+	SetCtrlTime(s_time.GetBuffer());
+	m_hours.SetCurSel(m_hours.FindString(-1, s_hours));//hours
 	m_type.SetCurSel(m_type.FindString(-1,s_type));//type
 	m_reason.SetWindowTextW(s_reason);//reason
 	m_allow.SetCurSel(m_allow.FindString(-1, s_allow));//allow
@@ -607,7 +609,8 @@ void CMFCApplication3Dlg::ShowDetail()
 	bool can_approve = (m_name == s_approver && s_allow == _T(""));
 
 	m_date_start.EnableWindow(can_propose);
-	m_date_stop.EnableWindow(can_propose);
+	m_time_start.EnableWindow(can_propose);
+	m_hours.EnableWindow(can_propose);
 	m_type.EnableWindow(can_propose);
 	m_reason.EnableWindow(can_propose);
 	m_allow.EnableWindow(can_approve);
@@ -631,12 +634,16 @@ void CMFCApplication3Dlg::OnSubmit()
 	PySetStr(tmp.GetBuffer(), 1);//proposer
 	m_approver.GetWindowTextW(approver);
 	PySetStr(approver.GetBuffer(), 2);//approver
-	CTime t;
-	m_date_start.GetTime(t);
-	PySetStr(CtimeToStr(t).GetBuffer(), 3);//start time
-	m_date_stop.GetTime(t);
-	PySetStr(CtimeToStr(t).GetBuffer(), 4);//stop time
-	int cur = m_type.GetCurSel();
+	PySetStr(GetCtrlTime().GetBuffer(), 3);//start time
+	int cur = m_hours.GetCurSel();
+	if (cur == -1)
+	{
+		AfxMessageBox(_T("请选择请假时长！"));
+		return;
+	}
+	m_hours.GetLBText(cur, tmp);
+	PySetStr(tmp.GetBuffer(), 4);//propose hours.
+	cur = m_type.GetCurSel();
 	if (cur==-1)
 	{
 		AfxMessageBox(_T("请选择假期类型！"));
@@ -663,8 +670,8 @@ void CMFCApplication3Dlg::OnSubmit()
 	}
 	m_comment.GetWindowTextW(tmp);
 	PySetStr(tmp.GetBuffer(), 8);//comment
-	PySetStr(_T(""), 9);//status
-	PySetInt(nItem>=0?m_history.GetItemData(nItem):-1, 10);
+	PySetStr(_T(""), 9);//back time
+	PySetStr(nItem>=0?m_history.GetItemText(nItem,4).GetBuffer():_T(""), 10);
 	PySendMsg("submit", 0, 0);
 	OnRefresh();
 }
@@ -677,7 +684,9 @@ void CMFCApplication3Dlg::OnDoBack()
 	if (pos)
 	{
 		nItem = m_history.GetNextSelectedItem(pos);
-		PySendMsg("do_back", m_history.GetItemData(nItem), 0);
+		PySetStr(m_history.GetItemText(nItem, 4).GetBuffer(),0);
+		PySendMsg("do_back", 0, 0);
+		m_btn_back.EnableWindow(0);
 		OnRefresh();
 	}
 }
@@ -704,14 +713,15 @@ void CMFCApplication3Dlg::OnPropose()
 	m_approver.SetWindowTextW(leader);
 	CTime t = CTime::GetCurrentTime();
 	m_date_start.SetTime(&t);
-	m_date_stop.SetTime(&t);
+	m_time_start.SetTime(&t);
 	m_type.SetCurSel(-1);
 	m_reason.SetWindowTextW(_T(""));
 	m_allow.SetCurSel(-1);
 	m_comment.SetWindowTextW(_T(""));
 
 	m_date_start.EnableWindow(1);
-	m_date_stop.EnableWindow(1);
+	m_time_start.EnableWindow(1);
+	m_hours.EnableWindow(1);
 	m_type.EnableWindow(1);
 	m_reason.EnableWindow(1);
 	m_allow.EnableWindow(0);
@@ -726,4 +736,25 @@ void CMFCApplication3Dlg::OnChangePassWd()
 {
 	CDlgChangePwd ccp;
 	m_name,ccp.ChangePasswd(m_name);
+}
+
+
+void CMFCApplication3Dlg::SetCtrlTime(WCHAR* s_time)
+{
+		int y, mon, d,h,minute;
+		swscanf_s(s_time, _T("%d.%d.%d %d:%d"), &y, &mon, &d,&h,&minute);
+		CTime time(y, mon, d, h, minute, 0);
+		m_date_start.SetTime(&time);
+		m_time_start.SetTime(&time);
+}
+
+
+CString CMFCApplication3Dlg::GetCtrlTime()
+{
+	CTime date,time;
+	m_date_start.GetTime(date);
+	m_time_start.GetTime(time);
+	CString ret;
+	ret.Format(_T("%d.%d.%d %d:%d"), date.GetYear(), date.GetMonth(), date.GetDay(), time.GetHour(), time.GetMinute());
+	return ret;
 }
