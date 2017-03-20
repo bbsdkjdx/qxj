@@ -95,6 +95,12 @@ def save_actives():
 def save_history():
 	json.dump(history,open(path_history,'w'))
 
+def is_leader(leader,name):
+	while name in users:
+		if name==leader:
+			return True
+		name=users[name][2]
+	return False
 
 
 def add_user(name,passwd,department,leader):
@@ -129,7 +135,8 @@ def login(un,pw):
 	return un,dep,leader#name,department,leader
 
 def get_history(token):
-	return [x+[n] for n,x in enumerate(history) if x[0]==token or x[1]==token]
+	names={x for x in users if is_leader(token,x)}
+	return [x for x in history if x[0] in names]
 
 
 def submit(token,piece,no):
@@ -187,6 +194,7 @@ svr.reg_fun(do_back)
 svr.reg_fun(do_delete)
 svr.reg_fun(submit)
 svr.reg_fun(get_actives)
+svr.reg_fun(get_history)
 svr.reg_fun(login)
 svr.run(0)
 
