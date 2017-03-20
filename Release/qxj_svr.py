@@ -1,7 +1,13 @@
 import rpc
 import time
-svr=rpc.RpcSvr(ip='0.0.0.0')
+import json
+import os
+path_users='users.json'
+path_actives='actives.json'
+path_history='history.json'
 
+svr=rpc.RpcSvr(ip='0.0.0.0')
+svr_admin=rpc.RpcSvr(ip='0.0.0.0',port=8001)
 
 def encrypt(s):
 	import base64
@@ -33,7 +39,6 @@ users['丛振宁']=['123','办公室','侯旭升']
 users['周晓静']=['123','办公室','侯旭升']
 users['张高玮']=['123','办公室','侯旭升']
 users['毕彬']=['123','办公室','侯旭升']
-
 users['王永胜']=['123','财务科','侯旭升']
 users['王初芳']=['123','财务科','侯旭升']
 
@@ -67,9 +72,49 @@ users['王竹亭']=['123','矿管科','梁建光']
 actives=dict()
 history=list()
 
-
-def add_user(nick,passwd,name,department):
+try:
+	users=json.load(open(path_users,'r'))
+except:
 	pass
+try:
+	actives=json.load(open(path_actives,'r'))
+except:
+	pass
+try:
+	history=json.load(open(path_history,'r'))
+except:
+	pass
+
+	
+def save_users():
+	json.dump(users,open(path_users,'w'))
+
+def save_actives():
+	json.dump(actives,open(path_actives,'w'))
+
+def save_history():
+	json.dump(history,open(path_history,'w'))
+
+
+
+def add_user(name,passwd,department,leader):
+	if name in users:
+		return '用户已存在'
+	users[name]=[passwd,department,leader]
+	save_users()
+	return 'ok'
+	#with open(path_users,'w') as f:
+		#return str(f)
+		#json.dump(users,f)
+def delete_user(name):
+	if name in users:
+		users.pop(name)
+		save_users()
+		return 'ok'
+	return '无此用户。'
+
+def list_all_data():
+	return users,actives,history
 
 def login(un,pw):
 	un=decrypt(un)
@@ -95,6 +140,7 @@ def submit(token,piece,no):
 	if no not in actives:
 		no=str(time.time())
 	actives[no]=piece
+	save_actives()
 	return 'ok'
 
 def do_back(token,no):
@@ -105,6 +151,8 @@ def do_back(token,no):
 		piece[-1]=time.strftime('%Y.%m.%d %H:%M')
 		actives.pop(no)
 		history.append(piece)
+		save_actives()
+		save_history()
 	return 'ok'
 
 def do_delete(token,no):
@@ -112,6 +160,7 @@ def do_delete(token,no):
 		return '无此用户'
 	if no in actives:
 		actives.pop(no)
+		save_actives()
 	return 'ok'
 
 def change_pwd(name,po,pn):
@@ -119,6 +168,7 @@ def change_pwd(name,po,pn):
 		return '无此用户'
 	if users[name][0]==po:
 		users[name][0]=pn
+		save_users()
 		return 'ok'
 	else:
 		return '原密码不正确'
@@ -139,3 +189,8 @@ svr.reg_fun(submit)
 svr.reg_fun(get_actives)
 svr.reg_fun(login)
 svr.run(0)
+
+svr_admin.reg_fun(add_user)
+svr_admin.reg_fun(delete_user)
+svr_admin.reg_fun(list_all_data)
+svr_admin.run(0)

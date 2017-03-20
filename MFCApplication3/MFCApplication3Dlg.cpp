@@ -676,6 +676,7 @@ void CMFCApplication3Dlg::OnSubmit()
 	PySetStr(nItem>=0?m_history.GetItemText(nItem,4).GetBuffer():_T(""), 10);
 	PySendMsg("submit", 0, 0);
 	OnRefresh();
+	ShowDetail();
 }
 
 
