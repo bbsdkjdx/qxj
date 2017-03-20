@@ -90,13 +90,14 @@ def get_history(token):
 def submit(token,piece,no):
 	if token not in users:
 		return '无此用户'
+	if piece in actives.values():
+		return 'ok'
 	if no not in actives:
 		no=str(time.time())
 	actives[no]=piece
 	return 'ok'
 
 def do_back(token,no):
-	print('back:'+token+no)
 	if token not in users:
 		return '无此用户'
 	if no in actives:
@@ -104,6 +105,13 @@ def do_back(token,no):
 		piece[-1]=time.strftime('%Y.%m.%d %H:%M')
 		actives.pop(no)
 		history.append(piece)
+	return 'ok'
+
+def do_delete(token,no):
+	if token not in users:
+		return '无此用户'
+	if no in actives:
+		actives.pop(no)
 	return 'ok'
 
 def change_pwd(name,po,pn):
@@ -126,6 +134,7 @@ def get_actives(token):
 
 svr.reg_fun(change_pwd)
 svr.reg_fun(do_back)
+svr.reg_fun(do_delete)
 svr.reg_fun(submit)
 svr.reg_fun(get_actives)
 svr.reg_fun(login)

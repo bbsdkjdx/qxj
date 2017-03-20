@@ -99,4 +99,7 @@ public:
 	CComboBox m_hours;
 	void SetCtrlTime(WCHAR* s_time);
 	CString GetCtrlTime();
+	afx_msg void OnBtnDelete();
+protected:
+	CButton m_btn_delete;
 };

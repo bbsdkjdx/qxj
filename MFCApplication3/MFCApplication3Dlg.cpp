@@ -124,6 +124,7 @@ void CMFCApplication3Dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BUTTON4, m_btn_back);
 	DDX_Text(pDX, IDC_EDIT2, m_name);
 	DDX_Control(pDX, IDC_COMBO5, m_hours);
+	DDX_Control(pDX, IDC_BUTTON7, m_btn_delete);
 }
 
 const UINT WM_TaskbarRestart = RegisterWindowMessage(TEXT("TaskbarCreated"));
@@ -149,6 +150,7 @@ ON_BN_CLICKED(IDC_BUTTON3, &CMFCApplication3Dlg::OnSubmit)
 ON_BN_CLICKED(IDC_BUTTON4, &CMFCApplication3Dlg::OnDoBack)
 ON_BN_CLICKED(IDC_BUTTON5, &CMFCApplication3Dlg::OnPropose)
 ON_BN_CLICKED(IDC_BUTTON6, &CMFCApplication3Dlg::OnChangePassWd)
+ON_BN_CLICKED(IDC_BUTTON7, &CMFCApplication3Dlg::OnBtnDelete)
 END_MESSAGE_MAP()
 
 
@@ -617,7 +619,7 @@ void CMFCApplication3Dlg::ShowDetail()
 	m_comment.EnableWindow(can_approve);
 	m_btn_submit.EnableWindow(can_approve||can_propose);
 	m_btn_back.EnableWindow(s_allow==_T("是") && m_name==s_proposer && s_backed==_T(""));
-
+	m_btn_delete.EnableWindow(can_propose || (s_allow == _T("否") && m_name==s_proposer));
 
 }
 
@@ -757,4 +759,19 @@ CString CMFCApplication3Dlg::GetCtrlTime()
 	CString ret;
 	ret.Format(_T("%d.%d.%d %d:%d"), date.GetYear(), date.GetMonth(), date.GetDay(), time.GetHour(), time.GetMinute());
 	return ret;
+}
+
+
+void CMFCApplication3Dlg::OnBtnDelete()
+{
+	int nItem = -1;
+	POSITION pos = m_history.GetFirstSelectedItemPosition();
+	if (pos)
+	{
+		nItem = m_history.GetNextSelectedItem(pos);
+		PySetStr(m_history.GetItemText(nItem, 4).GetBuffer(), 0);
+		PySendMsg("do_delete", 0, 0);
+		m_btn_delete.EnableWindow(0);
+		OnRefresh();
+	}
 }

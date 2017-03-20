@@ -133,7 +133,8 @@ def change_pwd(x,y):
 	un,po,pa=__main__.stack__[:3]
 	__main__.stack__[0]=cln.change_pwd(un,po,pa)
 
-
+def do_delete(x,y):
+	__main__.stack__[0]=cln.do_delete(token,__main__.stack__[0])
 
 def do_back(x,y):
 	#__main__.msgbox(token+__main__.stack__[0])
@@ -151,6 +152,7 @@ def init_dialog(x,y):
 	__main__.py_fun__['submit']=submit
 	__main__.py_fun__['get_log_info']=get_log_info
 	__main__.py_fun__['do_back']=do_back
+	__main__.py_fun__['do_delete']=do_delete
 	__main__.py_fun__['change_pwd']=change_pwd
 	__main__.py_fun__['get_actives_detail']=get_actives_detail
 __main__.py_fun__['on_init_dialog']=init_dialog	
