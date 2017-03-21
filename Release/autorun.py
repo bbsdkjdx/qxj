@@ -140,6 +140,40 @@ def do_back(x,y):
 	#__main__.msgbox(token+__main__.stack__[0])
 	__main__.stack__[0]=cln.do_back(token,__main__.stack__[0])
 
+list4sort=['刘昌军','刘玉丽','戚军','于秀波','于水','张德军','伯大华',\
+'侯旭升','王永胜','黄海涛','姜铁章','王学功','王晓艳','梁建光']
+
+def get_history(x,y):
+	global history
+	history=cln.get_history(token)
+	__main__.exe_fun__["clear_list"](0)
+
+	summary=dict()#[事假次，事假时，公休次，公休时]
+	for h in history:
+		name,typ,hour=h[0],h[4],int(h[3])
+		if name not in summary:
+			summary[name]=[0]*4
+		if typ=='公差':
+			summary[name][2]+=1
+			summary[name][3]+=hour
+		else:
+			summary[name][0]+=1
+			summary[name][1]+=hour
+	skey=lambda x:list4sort.index(x) if x in list4sort else 100
+	for n,x in enumerate(sorted(summary.keys(),key=skey)):
+		s2="%d次，%d小时"%(summary[x][0],summary[x][1])
+		s3="%d次，%d小时"%(summary[x][2],summary[x][3])
+		s4="%d次，%d小时"%(summary[x][0]+summary[x][2],summary[x][1]+summary[x][3])
+		__main__.exe_fun__["insert_list1"](n,x,s2,s3,s4)
+
+def show_history_detail(name,y):
+	global history
+	name=ctypes.c_wchar_p(name).value
+	__main__.exe_fun__["clear_list"](1)
+	for n,x in enumerate((h for h in history if h[0]==name)):
+		__main__.exe_fun__["insert_list2"](n,*x)
+
+
 def init_dialog(x,y):
 	__main__.py_fun__['on_timer'] =on_timer
 	__main__.py_fun__['on_destroy_window'] =on_destroy_window
@@ -151,6 +185,8 @@ def init_dialog(x,y):
 	__main__.py_fun__['refresh_actives']=refresh_actives
 	__main__.py_fun__['submit']=submit
 	__main__.py_fun__['get_log_info']=get_log_info
+	__main__.py_fun__['get_history']=get_history
+	__main__.py_fun__['show_history_detail']=show_history_detail
 	__main__.py_fun__['do_back']=do_back
 	__main__.py_fun__['do_delete']=do_delete
 	__main__.py_fun__['change_pwd']=change_pwd

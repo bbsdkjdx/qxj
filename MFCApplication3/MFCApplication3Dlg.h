@@ -102,4 +102,6 @@ public:
 	afx_msg void OnBtnDelete();
 protected:
 	CButton m_btn_delete;
+public:
+	afx_msg void OnBnClickedButton8();
 };

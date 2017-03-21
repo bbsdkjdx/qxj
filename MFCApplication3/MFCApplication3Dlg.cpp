@@ -9,6 +9,7 @@
 #include "python_support.h"
 #include "DlgLogin.h"
 #include "DlgChangePwd.h"
+#include "DlgHistory.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -151,6 +152,7 @@ ON_BN_CLICKED(IDC_BUTTON4, &CMFCApplication3Dlg::OnDoBack)
 ON_BN_CLICKED(IDC_BUTTON5, &CMFCApplication3Dlg::OnPropose)
 ON_BN_CLICKED(IDC_BUTTON6, &CMFCApplication3Dlg::OnChangePassWd)
 ON_BN_CLICKED(IDC_BUTTON7, &CMFCApplication3Dlg::OnBtnDelete)
+ON_BN_CLICKED(IDC_BUTTON8, &CMFCApplication3Dlg::OnBnClickedButton8)
 END_MESSAGE_MAP()
 
 
@@ -775,4 +777,11 @@ void CMFCApplication3Dlg::OnBtnDelete()
 		m_btn_delete.EnableWindow(0);
 		OnRefresh();
 	}
+}
+
+
+void CMFCApplication3Dlg::OnBnClickedButton8()
+{
+	CDlgHistory cdh;
+	cdh.ShowHistory(m_name);
 }

@@ -111,6 +111,7 @@
   <ItemGroup>
     <ClInclude Include="CmdEdit.h" />
     <ClInclude Include="DlgChangePwd.h" />
+    <ClInclude Include="DlgHistory.h" />
     <ClInclude Include="DlgLogin.h" />
     <ClInclude Include="MFCApplication3.h" />
     <ClInclude Include="MFCApplication3Dlg.h" />
@@ -122,6 +123,7 @@
   <ItemGroup>
     <ClCompile Include="CmdEdit.cpp" />
     <ClCompile Include="DlgChangePwd.cpp" />
+    <ClCompile Include="DlgHistory.cpp" />
     <ClCompile Include="DlgLogin.cpp" />
     <ClCompile Include="MFCApplication3.cpp" />
     <ClCompile Include="MFCApplication3Dlg.cpp" />

@@ -45,6 +45,9 @@
     <ClInclude Include="DlgChangePwd.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="DlgHistory.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MFCApplication3.cpp">
@@ -66,6 +69,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="DlgChangePwd.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgHistory.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
