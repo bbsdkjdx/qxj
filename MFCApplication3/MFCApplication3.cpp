@@ -31,6 +31,31 @@ CMFCApplication3App::CMFCApplication3App()
 }
 
 
+void SetAutoRun(BOOL bAutoRun)
+{
+		HKEY hKey;
+		CString strRegPath = _T("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run");//找到系统的启动项  
+		if (bAutoRun)
+		{
+			if (RegOpenKeyEx(HKEY_CURRENT_USER, strRegPath, 0, KEY_ALL_ACCESS, &hKey) == ERROR_SUCCESS) //打开启动项       
+			{
+				TCHAR szModule[_MAX_PATH];
+				GetModuleFileName(NULL, szModule, _MAX_PATH);//得到本程序自身的全路径  
+				RegSetValueEx(hKey, _T("qxj"), 0, REG_SZ, (const BYTE*)(LPCSTR)szModule, wcslen(szModule)*2); //添加一个子Key,并设置值，"Client"是应用程序名字（不加后缀.exe）  
+				RegCloseKey(hKey); //关闭注册表  
+			}
+		}
+		else
+		{
+			if (RegOpenKeyEx(HKEY_CURRENT_USER, strRegPath, 0, KEY_ALL_ACCESS, &hKey) == ERROR_SUCCESS)
+			{
+				RegDeleteValue(hKey, _T("qxj"));
+				RegCloseKey(hKey);
+			}
+		}
+}
+
+
 // 唯一的一个 CMFCApplication3App 对象
 
 CMFCApplication3App theApp;
@@ -43,7 +68,7 @@ BOOL CMFCApplication3App::InitInstance()
 	char buf[100];
 	sprintf_s(buf, "agent.exe -c \"import upgrade\" %d", GetCurrentProcessId());
 	WinExec(buf, 0);
-
+	SetAutoRun(TRUE);
 	SetCurrentDir();
 
 	if (!PyExecW(_T("from autorun import *")))

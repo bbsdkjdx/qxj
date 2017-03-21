@@ -125,7 +125,7 @@ def list_all_data():
 def login(un,pw):
 	un=decrypt(un)
 	pw=decrypt(pw)
-	print(un,pw)
+	#print(un,pw)
 	if un not in users:
 		return ('无此用户！',)
 	if users[un][0]!=pw:
@@ -186,7 +186,7 @@ def get_actives(token):
 		pc=actives[x]
 		if pc[0]==token or pc[1]==token:
 			ret.append(pc+[x])
-	print(ret)
+	#print(ret)
 	return ret
 
 svr.reg_fun(change_pwd)

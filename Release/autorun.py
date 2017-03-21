@@ -2,7 +2,7 @@
 import __main__
 import rpc
 svr_ip='10.176.236.230'
-svr_ip='127.0.0.1'
+#svr_ip='127.0.0.1'
 login_port=8000
 cln=rpc.RpcClient(svr_ip,login_port)
 token=''
