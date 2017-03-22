@@ -6,3 +6,4 @@ ipch/
 *.pyc
 Release/请销假终端.exe
 Release/upgrades/
+Release/login.json
