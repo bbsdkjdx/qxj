@@ -1,6 +1,9 @@
 ﻿import ctypes,json
 import __main__
 import rpc
+import socket
+
+socket.setdefaulttimeout(1)
 svr_ip='10.176.236.230'
 #svr_ip='127.0.0.1'
 login_port=8000
