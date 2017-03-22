@@ -170,7 +170,7 @@ def show_history_detail(name,y):
 	global history
 	name=ctypes.c_wchar_p(name).value
 	__main__.exe_fun__["clear_list"](1)
-	for n,x in enumerate((h for h in history if h[0]==name)):
+	for n,x in enumerate(sorted((h for h in history if h[0]==name),key=lambda t:t[-1])):
 		__main__.exe_fun__["insert_list2"](n,*x)
 
 

@@ -2,12 +2,22 @@ import rpc
 import time
 import json
 import os
+import sys
+
+#disable std.err output.
+class MyStdError(object):
+	def write(self,*arg):
+		pass
+oldstderr=sys.stderr
+sys.stderr=MyStdError()
+		
+
+
 path_users='users.json'
 path_actives='actives.json'
 path_history='history.json'
 
 svr=rpc.RpcSvr(ip='0.0.0.0')
-svr_admin=rpc.RpcSvr(ip='0.0.0.0',port=8001)
 
 def encrypt(s):
 	import base64
@@ -23,52 +33,6 @@ def decrypt(s):
 
 
 users=dict()
-users['刘昌军']=['123','局领导','市局']
-users['刘玉丽']=['123','局领导','刘昌军']
-users['戚军']=['123','局领导','刘昌军']
-users['于秀波']=['123','局领导','刘昌军']
-users['于水']=['123','局领导','刘昌军']
-users['张德军']=['123','局领导','刘昌军']
-users['伯大华']=['123','局领导','刘昌军']
-
-users['侯旭升']=['123','办公室','于水']
-users['于昌民']=['123','办公室','侯旭升']
-users['袁建朴']=['123','办公室','侯旭升']
-users['姜晶']=['123','办公室','侯旭升']
-users['丛振宁']=['123','办公室','侯旭升']
-users['周晓静']=['123','办公室','侯旭升']
-users['张高玮']=['123','办公室','侯旭升']
-users['毕彬']=['123','办公室','侯旭升']
-users['王永胜']=['123','财务科','侯旭升']
-users['王初芳']=['123','财务科','侯旭升']
-
-users['黄海涛']=['123','监察科','伯大华']
-users['慈军玲']=['123','监察科','黄海涛']
-users['夏栋']=['123','监察科','黄海涛']
-users['毕建卫']=['123','监察科','黄海涛']
-users['孙先仁']=['123','监察科','黄海涛']
-
-users['姜铁章']=['123','耕保科','张德军']
-users['王洪军']=['123','耕保科','姜铁章']
-users['刘鹏']=['123','耕保科','姜铁章']
-users['郭午鹏']=['123','耕保科','姜铁章']
-
-users['王晓艳']=['123','地籍科','于秀波']
-users['孙畅游']=['123','地籍科','王晓艳']
-users['李帅']=['123','地籍科','王晓艳']
-users['毕瀚方']=['123','地籍科','王晓艳']
-users['孙林静']=['123','地籍科','王晓艳']
-
-users['王学功']=['123','科用科','张德军']
-users['常韶璠']=['123','科用科','王学功']
-users['高鲲鹏']=['123','科用科','王学功']
-users['张雯霖']=['123','科用科','王学功']
-
-users['梁建光']=['123','矿管科','戚军']
-users['姚振飞']=['123','矿管科','梁建光']
-users['王竹亭']=['123','矿管科','梁建光']
-
-
 actives=dict()
 history=list()
 
@@ -81,7 +45,8 @@ try:
 except:
 	pass
 try:
-	history=json.load(open(path_history,'r'))
+	for x in open(path_history,'r'):
+		history.append(json.loads(x))
 except:
 	pass
 
@@ -92,8 +57,8 @@ def save_users():
 def save_actives():
 	json.dump(actives,open(path_actives,'w'))
 
-def save_history():
-	json.dump(history,open(path_history,'w'))
+def save_history(piece):
+	open(path_history,'a').write(json.dumps(piece)+'\n')
 
 def is_leader(leader,name):
 	while name in users:
@@ -101,26 +66,6 @@ def is_leader(leader,name):
 			return True
 		name=users[name][2]
 	return False
-
-
-def add_user(name,passwd,department,leader):
-	if name in users:
-		return '用户已存在'
-	users[name]=[passwd,department,leader]
-	save_users()
-	return 'ok'
-	#with open(path_users,'w') as f:
-		#return str(f)
-		#json.dump(users,f)
-def delete_user(name):
-	if name in users:
-		users.pop(name)
-		save_users()
-		return 'ok'
-	return '无此用户。'
-
-def list_all_data():
-	return users,actives,history
 
 def login(un,pw):
 	un=decrypt(un)
@@ -159,7 +104,7 @@ def do_back(token,no):
 		actives.pop(no)
 		history.append(piece)
 		save_actives()
-		save_history()
+		save_history(piece)
 	return 'ok'
 
 def do_delete(token,no):
@@ -197,8 +142,3 @@ svr.reg_fun(get_actives)
 svr.reg_fun(get_history)
 svr.reg_fun(login)
 svr.run(0)
-
-svr_admin.reg_fun(add_user)
-svr_admin.reg_fun(delete_user)
-svr_admin.reg_fun(list_all_data)
-svr_admin.run(0)
