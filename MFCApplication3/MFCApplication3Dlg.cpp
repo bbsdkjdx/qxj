@@ -186,11 +186,13 @@ BOOL CMFCApplication3Dlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 	// add sys tray.
+	CString s_title = GetVersionStr(_T("国土环翠分局请销假客户端"));
+	SetWindowText(s_title);
 	m_tnid.cbSize = sizeof(NOTIFYICONDATA);
 	m_tnid.hWnd = m_hWnd;
 	m_tnid.uFlags = NIF_MESSAGE | NIF_ICON | NIF_TIP;
 	m_tnid.uCallbackMessage = IDM_TRAY;
-	wcscpy_s(m_tnid.szTip, _T("国土环翠分局请销假系统"));
+	wcscpy_s(m_tnid.szTip, s_title);
 	m_tnid.uID = IDR_MAINFRAME;
 	m_tnid.hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	Shell_NotifyIcon(NIM_ADD, &m_tnid);

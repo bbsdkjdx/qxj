@@ -48,3 +48,4 @@
 #endif
 
 
+CString GetVersionStr(WCHAR *s);
