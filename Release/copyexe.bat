@@ -1,0 +1,1 @@
+copy ÇëÏú¼ÙÖÕ¶Ë.exe .\upgrades\main

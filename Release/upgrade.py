@@ -26,7 +26,7 @@ for fn in newinfo:
 		fileneeds.append(fn)
 
 
-if 'main' in fileneeds:
+if fileneeds:
 	win32tools.killpid(pid)
 
 for fn in fileneeds:
@@ -37,5 +37,5 @@ for fn in fileneeds:
 	except:
 		pass
 
-if 'main' in fileneeds:
+if fileneeds:
 	win32tools.shell_execute(exefn)

@@ -96,21 +96,27 @@ BOOL CDlgHistory::OnInitDialog()
 	m_list1.SetExtendedStyle(dwStyle);            //设置扩展风格
 	m_list2.SetExtendedStyle(dwStyle);            //设置扩展风格
 
-	// TODO:  在此添加额外的初始化
-	m_list1.InsertColumn(0, _T("请假人"), 0, 50);
-	m_list1.InsertColumn(1, _T("事假合计"), 0, 150);
-	m_list1.InsertColumn(2, _T("公差合计"), 0, 150);
-	m_list1.InsertColumn(3, _T("总计"), 0, 150);
+	RECT rct;
+	pli1->GetWindowRect(&rct);
+	int l1 = rct.right - rct.left;
+	pli2->GetWindowRect(&rct);
+	int l2 = rct.right - rct.left;
 
-	m_list2.InsertColumn(0, _T("请假人"),0,50);
-	m_list2.InsertColumn(1, _T("批假人"), 0, 50);
-	m_list2.InsertColumn(2, _T("请假时间"), 0, 110);
-	m_list2.InsertColumn(3, _T("时长(h)"), 0, 50);
-	m_list2.InsertColumn(4, _T("类别"), 0, 50);
-	m_list2.InsertColumn(5, _T("事由"), 0, 120);
-	m_list2.InsertColumn(7, _T("准假"), 0, 50);
-	m_list2.InsertColumn(8, _T("批示"), 0, 120);
-	m_list2.InsertColumn(9, _T("销假时间"), 0, 110);
+	// TODO:  在此添加额外的初始化
+	m_list1.InsertColumn(0, _T("请假人"), 0, l1/10);
+	m_list1.InsertColumn(1, _T("事假合计"), 0, l1*3/10);
+	m_list1.InsertColumn(2, _T("公差合计"), 0, l1 * 3 / 10);
+	m_list1.InsertColumn(3, _T("总计"), 0, l1 * 3 / 10);
+
+	m_list2.InsertColumn(0, _T("请假人"),0,5*l2/71);
+	m_list2.InsertColumn(1, _T("批假人"), 0, 5 * l2 / 71);
+	m_list2.InsertColumn(2, _T("请假时间"), 0, 11 * l2 / 71);
+	m_list2.InsertColumn(3, _T("时长(h)"), 0, 5 * l2 / 71);
+	m_list2.InsertColumn(4, _T("类别"), 0, 5 * l2 / 71);
+	m_list2.InsertColumn(5, _T("事由"), 0, 12 * l2 / 71);
+	m_list2.InsertColumn(7, _T("准假"), 0, 5 * l2 / 71);
+	m_list2.InsertColumn(8, _T("批示"), 0, 12 * l2 / 71);
+	m_list2.InsertColumn(9, _T("销假时间"), 0, 11 * l2 / 71);
 
 	PySendMsg("get_history", 0, 0);
 	return TRUE;  // return TRUE unless you set the focus to a control
