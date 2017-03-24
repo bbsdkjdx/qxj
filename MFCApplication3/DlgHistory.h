@@ -29,4 +29,6 @@ public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedOk();
 	afx_msg void OnLvnItemchangedList1(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnBnClickedOk2();
+	afx_msg void OnBnClickedButton2();
 };

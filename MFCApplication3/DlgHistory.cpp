@@ -33,6 +33,7 @@ void CDlgHistory::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CDlgHistory, CDialog)
 	ON_BN_CLICKED(IDOK, &CDlgHistory::OnBnClickedOk)
 	ON_NOTIFY(LVN_ITEMCHANGED, IDC_LIST1, &CDlgHistory::OnLvnItemchangedList1)
+	ON_BN_CLICKED(IDC_BUTTON2, &CDlgHistory::OnBnClickedButton2)
 END_MESSAGE_MAP()
 
 
@@ -144,4 +145,27 @@ void CDlgHistory::OnLvnItemchangedList1(NMHDR *pNMHDR, LRESULT *pResult)
 	PySendMsg("show_history_detail", unsigned(name.GetBuffer()), 0);
 
 	*pResult = 0;
+}
+
+
+
+
+void CDlgHistory::OnBnClickedButton2()
+{
+	// szFilters is a text string that includes two file name filters: 
+	// "*.my" for "MyType Files" and "*.*' for "All Files."
+	TCHAR szFilters[] = _T("Excel Files (*.xls)|*.xls|");
+
+	// Create an Open dialog; the default file name extension is ".my".
+	CFileDialog fileDlg(FALSE, _T("休假记录"), _T("休假记录.xls"),
+		OFN_FILEMUSTEXIST | OFN_HIDEREADONLY, szFilters);
+
+	// Display the file dialog. When user clicks OK, fileDlg.DoModal()  
+	// returns IDOK. 
+	if (fileDlg.DoModal() == IDOK)
+	{
+		CString pathName = fileDlg.GetPathName();
+		PySendMsg("save_excel", unsigned(pathName.GetBuffer()), 0);
+		AfxMessageBox(_T("导出成功！"));
+	}
 }

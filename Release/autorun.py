@@ -176,6 +176,21 @@ def show_history_detail(name,y):
 	for n,x in enumerate(sorted((h for h in history if h[0]==name),key=lambda t:t[-1])):
 		__main__.exe_fun__["insert_list2"](n,*x)
 
+def save_excel(x,y):
+	global history
+	import xlwt
+	fn=ctypes.c_wchar_p(x).value
+	style0 = xlwt.easyxf('font:bold on ,color-index red')
+	wb = xlwt.Workbook()
+	ws = wb.add_sheet('历史记录')
+	hist0=['请假人','批假人','请假时间','时长(h)','类别','事由','准假','指示','销假时间']
+	for c,itm in enumerate(hist0):
+		ws.write(0,c,itm,style0)
+
+	for r,h in enumerate(history,1):
+		for c,itm in enumerate(h):
+			ws.write(r,c,itm)
+	wb.save(fn)
 
 def init_dialog(x,y):
 	__main__.py_fun__['on_timer'] =on_timer
@@ -193,6 +208,7 @@ def init_dialog(x,y):
 	__main__.py_fun__['do_back']=do_back
 	__main__.py_fun__['do_delete']=do_delete
 	__main__.py_fun__['change_pwd']=change_pwd
+	__main__.py_fun__['save_excel']=save_excel
 	__main__.py_fun__['get_actives_detail']=get_actives_detail
 __main__.py_fun__['on_init_dialog']=init_dialog	
 
