@@ -82,6 +82,7 @@ public:
 	CComboBox m_allow;
 	CEdit m_comment;
 	CButton m_btn_submit;
+//	CButton m_btn_propose;
 	afx_msg void OnSubmit();
 	afx_msg void OnDoBack();
 protected:
@@ -104,4 +105,5 @@ protected:
 	CButton m_btn_delete;
 public:
 	afx_msg void OnBnClickedButton8();
+	CButton m_btn_propose;
 };

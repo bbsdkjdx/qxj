@@ -11,7 +11,7 @@ class MyStdError(object):
 oldstderr=sys.stderr
 sys.stderr=MyStdError()
 		
-
+show_active=0
 
 path_users='users.json'
 path_actives='actives.json'
@@ -77,9 +77,13 @@ def login(un,pw):
 		return ('密码错误！',)
 	dep=users[un][1]
 	leader=users[un][2]
+	if show_active:
+		print(un+' login.')
 	return un,dep,leader#name,department,leader
 
 def get_history(token):
+	if token=='admin':
+		return history
 	names={x for x in users if is_leader(token,x)}
 	return [x for x in history if x[0] in names]
 
@@ -126,12 +130,15 @@ def change_pwd(name,po,pn):
 		return '原密码不正确'
 
 def get_actives(token):
-	ret=[]
-	for x in actives:
-		pc=actives[x]
-		if pc[0]==token or pc[1]==token:
-			ret.append(pc+[x])
-	#print(ret)
+	values=list(actives.values())
+	if token in ['admin','刘昌军']:
+		return values
+
+	names={x for x in users if is_leader(token,x)}
+	return [x for x in values if x[0] in names]
+
+	if show_active:
+		print(token+' refresh.')
 	return ret
 
 svr.reg_fun(change_pwd)

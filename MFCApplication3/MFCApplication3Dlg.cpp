@@ -126,6 +126,8 @@ void CMFCApplication3Dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT2, m_name);
 	DDX_Control(pDX, IDC_COMBO5, m_hours);
 	DDX_Control(pDX, IDC_BUTTON7, m_btn_delete);
+	//  DDX_Control(pDX, IDC_BUTTON5, m_btn_propose);
+	DDX_Control(pDX, IDC_BUTTON5, m_btn_propose);
 }
 
 const UINT WM_TaskbarRestart = RegisterWindowMessage(TEXT("TaskbarCreated"));
@@ -517,7 +519,7 @@ void CMFCApplication3Dlg::OnCustomdrawHistory(NMHDR *pNMHDR, LRESULT *pResult)
 							*pResult = CDRF_DODEFAULT;
 							return;
 						}
-						if (strText.Find(_T("待领导审批")) != -1)
+						if (strText.Find(_T("待审批")) != -1)
 						{
 							lplvdr->clrTextBk = RGB(227,176,0);//ItemColor;
 							*pResult = CDRF_DODEFAULT;
@@ -622,6 +624,7 @@ void CMFCApplication3Dlg::ShowDetail()
 	m_allow.EnableWindow(can_approve);
 	m_comment.EnableWindow(can_approve);
 	m_btn_submit.EnableWindow(can_approve||can_propose);
+	m_btn_propose.EnableWindow(!(can_approve || can_propose));
 	m_btn_back.EnableWindow(s_allow==_T("是") && m_name==s_proposer && s_backed==_T(""));
 	m_btn_delete.EnableWindow(can_propose || (s_allow == _T("否") && m_name==s_proposer));
 
@@ -734,6 +737,7 @@ void CMFCApplication3Dlg::OnPropose()
 	m_allow.EnableWindow(0);
 	m_comment.EnableWindow(0);
 	m_btn_submit.EnableWindow(1);
+	m_btn_propose.EnableWindow(0);
 	m_btn_back.EnableWindow(0);
 
 }

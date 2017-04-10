@@ -88,7 +88,7 @@ def do_login(x,y):
 		__main__.stack__[0]='服务器连接错误！'
 
 
-order=['待您审批','待领导审批','已批准','已销假','未批准']
+order=['待您审批','待审批','已批准','已销假','未批准']
 
 def refresh_actives(x,y):
 	global actives
@@ -103,7 +103,7 @@ def refresh_actives(x,y):
 			sta='已销假'
 		else:
 			if x[6]=='':
-				sta='待领导审批' if x[0]==token else '待您审批'
+				sta='待审批' if x[1]!=token else '待您审批'
 			else:
 				sta='已批准' if x[6]=='是' else '未批准'
 		x.append(sta)
@@ -183,7 +183,7 @@ def save_excel(x,y):
 	style0 = xlwt.easyxf('font:bold on ,color-index red')
 	wb = xlwt.Workbook()
 	ws = wb.add_sheet('历史记录')
-	hist0=['请假人','批假人','请假时间','时长(h)','类别','事由','准假','指示','销假时间']
+	hist0=['请假人','批假人','请假时间','时长(h)','类别','事由','准假','批示','销假时间']
 	for c,itm in enumerate(hist0):
 		ws.write(0,c,itm,style0)
 
