@@ -130,16 +130,16 @@ def change_pwd(name,po,pn):
 		return '原密码不正确'
 
 def get_actives(token):
-	values=list(actives.values())
-	if token in ['admin','刘昌军']:
+	if show_active:
+		print(token+' refresh.')
+
+	values=[actives[x]+[x] for x in actives]
+
+	if token=='admin':
 		return values
 
 	names={x for x in users if is_leader(token,x)}
 	return [x for x in values if x[0] in names]
-
-	if show_active:
-		print(token+' refresh.')
-	return ret
 
 svr.reg_fun(change_pwd)
 svr.reg_fun(do_back)

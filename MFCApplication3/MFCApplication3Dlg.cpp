@@ -681,6 +681,7 @@ void CMFCApplication3Dlg::OnSubmit()
 	PySetStr(tmp.GetBuffer(), 8);//comment
 	PySetStr(_T(""), 9);//back time
 	PySetStr(nItem>=0?m_history.GetItemText(nItem,4).GetBuffer():_T(""), 10);
+	//AfxMessageBox(m_history.GetItemText(nItem, 4));
 	PySendMsg("submit", 0, 0);
 	OnRefresh();
 	ShowDetail();
