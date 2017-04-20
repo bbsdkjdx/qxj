@@ -106,4 +106,6 @@ protected:
 public:
 	afx_msg void OnBnClickedButton8();
 	CButton m_btn_propose;
+protected:
+	void ShowBubble(CString info);
 };

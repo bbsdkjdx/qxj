@@ -198,6 +198,9 @@ BOOL CMFCApplication3Dlg::OnInitDialog()
 	m_tnid.uID = IDR_MAINFRAME;
 	m_tnid.hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	Shell_NotifyIcon(NIM_ADD, &m_tnid);
+
+
+
 	//reg functions being used by python.
 	REG_EXE_FUN(show_window, "#l","void(int show)");
 	REG_EXE_FUN(get_main_hwnd, "u","uint()");
@@ -369,6 +372,22 @@ void CMFCApplication3Dlg::OnTimer(UINT_PTR nIDEvent)
 		char buf[100];
 		sprintf_s(buf, "agent.exe -c \"import upgrade\" %d", GetCurrentProcessId());
 		WinExec(buf, 0);
+		////////////////////// notify do back.
+		for (int n = 0; n < m_history.GetItemCount(); ++n)
+		{
+			if (m_history.GetItemText(n, 0) == m_name && m_history.GetItemText(n, 3) == _T("已批准"))
+			{
+				int y, mon, d, h, minute;
+				swscanf_s(m_history.GetItemText(n, 2).GetBuffer(), _T("%d.%d.%d %d:%d"), &y, &mon, &d, &h, &minute);
+				CTime tm = CTime::GetCurrentTime();
+				if (tm.GetDay() != d)
+				{
+					ShowBubble(_T("您好，请及时销假！"));
+					break;
+				}
+			}
+		}
+		///////////////////////////////////////////
 	}
 
 	CDialogEx::OnTimer(nIDEvent);
@@ -791,4 +810,13 @@ void CMFCApplication3Dlg::OnBnClickedButton8()
 {
 	CDlgHistory cdh;
 	cdh.ShowHistory(m_name);
+}
+
+
+void CMFCApplication3Dlg::ShowBubble(CString info)
+{
+	m_tnid.uFlags = NIF_INFO;
+	wcscpy_s(m_tnid.szInfoTitle, GetVersionStr(_T("国土环翠分局请销假客户端")));
+	wcscpy_s(m_tnid.szInfo, info.GetBuffer());
+	Shell_NotifyIcon(NIM_MODIFY, &m_tnid);
 }
