@@ -13,6 +13,9 @@ for f in fns:
 	datas[f]=dat
 	crcs[f]=str(binascii.crc32(dat))
 
+#delete file
+crcs['autorun.pyc']='0'
+crcs['upgrade.pyc']='0'
 
 def get_info():
 	return crcs

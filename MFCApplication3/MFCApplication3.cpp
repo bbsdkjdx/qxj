@@ -71,6 +71,8 @@ BOOL CMFCApplication3App::InitInstance()
 	SetAutoRun(TRUE);
 	SetCurrentDir();
 
+	PyExecW(_T("import sys;sys.path.insert(0,'msvcp134.dll')"));
+
 	if (!PyExecW(_T("from autorun import *")))
 	{
 		AfxMessageBox(PyGetStr());
@@ -82,6 +84,10 @@ BOOL CMFCApplication3App::InitInstance()
 		return 0;
 	}
 	
+	//PyExecW(_T("import autorun"));
+	//PyEvalW(_T("str(autorun)"));
+	//AfxMessageBox(PyGetStr());
+
 	//WinExec("agent.exe -c \"import upgrade\" abc",0);
 
 	// 如果一个运行在 Windows XP 上的应用程序清单指定要

@@ -21,3 +21,4 @@ CString GetVersionStr(WCHAR *s)
 		(pFinfo->dwFileVersionLS) & 0xFF);
 	return valStr;
 }
+

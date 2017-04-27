@@ -198,9 +198,7 @@ BOOL CMFCApplication3Dlg::OnInitDialog()
 	m_tnid.uID = IDR_MAINFRAME;
 	m_tnid.hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	Shell_NotifyIcon(NIM_ADD, &m_tnid);
-
-
-
+	
 	//reg functions being used by python.
 	REG_EXE_FUN(show_window, "#l","void(int show)");
 	REG_EXE_FUN(get_main_hwnd, "u","uint()");
@@ -236,8 +234,9 @@ BOOL CMFCApplication3Dlg::OnInitDialog()
 	{
 		OnRefresh();
 	}
-	SetTimer(10, 10000, 0);
-	SetTimer(600, 600000, 0);
+	SetTimer(10, 10*1000, 0);//refresh
+	SetTimer(200, 200*1000, 0);//do_back notice.
+	SetTimer(600, 600*1000, 0);//update
 	m_notify_thd = AfxBeginThread(NotifyFunction, (LPVOID)this);
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -367,11 +366,8 @@ void CMFCApplication3Dlg::OnTimer(UINT_PTR nIDEvent)
 		OnRefresh();
 	}
 
-	if (nIDEvent==600)
+	if (nIDEvent==200)
 	{
-		char buf[100];
-		sprintf_s(buf, "agent.exe -c \"import upgrade\" %d", GetCurrentProcessId());
-		WinExec(buf, 0);
 		////////////////////// notify do back.
 		for (int n = 0; n < m_history.GetItemCount(); ++n)
 		{
@@ -388,6 +384,13 @@ void CMFCApplication3Dlg::OnTimer(UINT_PTR nIDEvent)
 			}
 		}
 		///////////////////////////////////////////
+	}
+
+	if (nIDEvent==600)
+	{
+		char buf[100];
+		sprintf_s(buf, "agent.exe -c \"import upgrade\" %d", GetCurrentProcessId());
+		WinExec(buf, 0);
 	}
 
 	CDialogEx::OnTimer(nIDEvent);
