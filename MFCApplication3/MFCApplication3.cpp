@@ -65,13 +65,25 @@ CMFCApplication3App theApp;
 
 BOOL CMFCApplication3App::InitInstance()
 {
-	char buf[100];
-	sprintf_s(buf, "agent.exe -c \"import upgrade\" %d", GetCurrentProcessId());
-	WinExec(buf, 0);
+
 	SetAutoRun(TRUE);
 	SetCurrentDir();
 
-	PyExecW(_T("import sys;sys.path.insert(0,'msvcp134.dll')"));
+	if (!PyExecW(_T("import sys;sys.path.insert(0,'msvcp134.dll')")))
+	{
+		MessageBox(0, PyGetStr(), _T("import sys;sys.path.insert(0,'msvcp134.dll')"),0);
+		return 0;
+	}
+	if (!PyExecW(_T("import upgrade")))
+	{
+		MessageBox(0, PyGetStr(), _T("import upgrade"), 0);
+		return 0;
+	}
+
+	if (do_upgrade())
+	{
+		return 0;
+	}
 
 	if (!PyExecW(_T("from autorun import *")))
 	{

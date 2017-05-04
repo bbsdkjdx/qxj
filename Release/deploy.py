@@ -5,6 +5,7 @@ zf = zipfile.ZipFile('upgrades\\msvcp134.dll', mode='w')
 try:
     zf.write('__pycache__\\autorun.cpython-34.pyc', arcname='autorun.pyc')
     zf.write('__pycache__\\upgrade.cpython-34.pyc', arcname='upgrade.pyc')
+    zf.write('__pycache__\\rpc.cpython-34.pyc', arcname='rpc.pyc')
 finally:
     zf.close()
 

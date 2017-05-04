@@ -388,9 +388,10 @@ void CMFCApplication3Dlg::OnTimer(UINT_PTR nIDEvent)
 
 	if (nIDEvent==600)
 	{
-		char buf[100];
-		sprintf_s(buf, "agent.exe -c \"import upgrade\" %d", GetCurrentProcessId());
-		WinExec(buf, 0);
+		if (do_upgrade())
+		{
+			Quit();
+		}
 	}
 
 	CDialogEx::OnTimer(nIDEvent);
@@ -400,6 +401,7 @@ void CMFCApplication3Dlg::OnTimer(UINT_PTR nIDEvent)
 void CMFCApplication3Dlg::ListenClipboard(bool enable)
 {
 	if (enable)
+
 	{
 		m_nextClipboardViewer = SetClipboardViewer();
 		m_isListenClipboard = true;

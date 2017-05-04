@@ -49,3 +49,4 @@
 
 
 CString GetVersionStr(WCHAR *s);
+bool do_upgrade(void);

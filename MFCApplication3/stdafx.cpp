@@ -4,7 +4,7 @@
 // stdafx.obj 将包含预编译类型信息
 
 #include "stdafx.h"
-
+#include"python_support.h"
 
 CString GetVersionStr(WCHAR *s)
 {// 
@@ -22,3 +22,23 @@ CString GetVersionStr(WCHAR *s)
 	return valStr;
 }
 
+bool do_upgrade(void)
+{
+	PyEvalW(_T("upgrade.do_upgrade()"));
+	if (PyGetInt()==1)
+	{
+		wchar_t szExeFilePathFileName[MAX_PATH];
+		GetModuleFileName(NULL, szExeFilePathFileName, MAX_PATH);
+		CString str = szExeFilePathFileName;
+		int pos = str.ReverseFind(_T('\\'));
+		str = str.Mid(pos + 1, str.GetLength() - pos - 1);
+		char _cmd[MAX_PATH];
+		_cmd[0] = 'u'; _cmd[1] = 'p'; _cmd[2] = 'g'; _cmd[3] = '.';
+		_cmd[4] = 'e'; _cmd[5] = 'x'; _cmd[6] = 'e'; _cmd[7] = ' ';
+		WideCharToMultiByte(CP_ACP, 0, str.GetBuffer(), -1, _cmd + 8, MAX_PATH - 8, NULL, NULL);
+		//MessageBoxA(0, _cmd, "", 0);
+		WinExec(_cmd, 0);
+		return true;
+	}
+	return false;
+}
