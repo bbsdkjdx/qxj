@@ -55,7 +55,8 @@ def on_cb_chg(x,y):
 
 import winsound
 def on_timer(x,y):
-	pass
+	if x==600:
+		do_upgrade()
     #winsound.Beep(x*500,200)
     #msgbox('on timer'+str(x))
 
@@ -210,7 +211,13 @@ def init_dialog(x,y):
 	__main__.py_fun__['change_pwd']=change_pwd
 	__main__.py_fun__['save_excel']=save_excel
 	__main__.py_fun__['get_actives_detail']=get_actives_detail
+	do_upgrade()
 __main__.py_fun__['on_init_dialog']=init_dialog	
+
+def do_upgrade():
+	cmd='upg.exe %d' % (__main__.exe_fun__['get_main_hwnd']())
+	cmd=cmd.encode('gb2312')
+	ctypes.windll.kernel32.WinExec(cmd,1)
 
 def encrypt(s):
 	import base64

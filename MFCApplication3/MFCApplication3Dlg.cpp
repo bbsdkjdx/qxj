@@ -155,6 +155,7 @@ ON_BN_CLICKED(IDC_BUTTON5, &CMFCApplication3Dlg::OnPropose)
 ON_BN_CLICKED(IDC_BUTTON6, &CMFCApplication3Dlg::OnChangePassWd)
 ON_BN_CLICKED(IDC_BUTTON7, &CMFCApplication3Dlg::OnBtnDelete)
 ON_BN_CLICKED(IDC_BUTTON8, &CMFCApplication3Dlg::OnBnClickedButton8)
+ON_MESSAGE(WM_QuitForUpgrade, &CMFCApplication3Dlg::OnQuitforupgrade)
 END_MESSAGE_MAP()
 
 
@@ -386,13 +387,10 @@ void CMFCApplication3Dlg::OnTimer(UINT_PTR nIDEvent)
 		///////////////////////////////////////////
 	}
 
-	if (nIDEvent==600)
-	{
-		if (do_upgrade())
-		{
-			Quit();
-		}
-	}
+	//if (nIDEvent==600)
+	//{
+	//	do_upgrade();
+	//}
 
 	CDialogEx::OnTimer(nIDEvent);
 }
@@ -824,4 +822,11 @@ void CMFCApplication3Dlg::ShowBubble(CString info)
 	wcscpy_s(m_tnid.szInfoTitle, GetVersionStr(_T("国土环翠分局请销假客户端")));
 	wcscpy_s(m_tnid.szInfo, info.GetBuffer());
 	Shell_NotifyIcon(NIM_MODIFY, &m_tnid);
+}
+
+
+afx_msg LRESULT CMFCApplication3Dlg::OnQuitforupgrade(WPARAM wParam, LPARAM lParam)
+{
+	Quit();
+	return 0;
 }

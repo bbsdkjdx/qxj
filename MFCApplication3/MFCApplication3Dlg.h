@@ -8,6 +8,8 @@
 #include "CmdEdit.h"
 #include "afxdtctl.h"
 
+const int WM_QuitForUpgrade = 44444;
+
 class CMFCApplication3Dlg : public CDialogEx
 {
 public:
@@ -108,4 +110,5 @@ public:
 	CButton m_btn_propose;
 protected:
 	void ShowBubble(CString info);
+	afx_msg LRESULT OnQuitforupgrade(WPARAM wParam, LPARAM lParam);
 };

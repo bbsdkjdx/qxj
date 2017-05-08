@@ -74,16 +74,16 @@ BOOL CMFCApplication3App::InitInstance()
 		MessageBox(0, PyGetStr(), _T("import sys;sys.path.insert(0,'msvcp134.dll')"),0);
 		return 0;
 	}
-	if (!PyExecW(_T("import upgrade")))
-	{
-		MessageBox(0, PyGetStr(), _T("import upgrade"), 0);
-		return 0;
-	}
+	//if (!PyExecW(_T("import upgrade")))
+	//{
+	//	MessageBox(0, PyGetStr(), _T("import upgrade"), 0);
+	//	return 0;
+	//}
 
-	if (do_upgrade())
-	{
-		return 0;
-	}
+	//if (do_upgrade())
+	//{
+	//	return 0;
+	//}
 
 	if (!PyExecW(_T("from autorun import *")))
 	{

