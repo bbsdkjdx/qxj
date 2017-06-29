@@ -74,6 +74,14 @@ void block_message(bool blk)
 	}
 }
 
+void show_bubble(WCHAR *msg)
+{
+	if (g_p_main_dlg)
+	{
+		g_p_main_dlg->ShowBubble(msg);
+	}
+}
+
 void append_actives(int n,WCHAR *un1, WCHAR *un2, WCHAR *leave, WCHAR *status, WCHAR *id)
 {
 	if (!g_p_main_dlg)return;
@@ -209,7 +217,7 @@ BOOL CMFCApplication3Dlg::OnInitDialog()
 	REG_EXE_FUN(set_tray_icon, "lS", "bool(wchar* fn_ico)");
 	REG_EXE_FUN(block_message, "#l", "block_message(bool blk)");
 	REG_EXE_FUN(append_actives, "#lSSSSS", "append_actives(int n,WCHAR *un1, WCHAR *un2, WCHAR *leave, WCHAR *status,WCHAR* id)");
-
+	REG_EXE_FUN(show_bubble, "#S", "show_bubble(wchar *msg)");
 	//list control set
 	RECT rct;
 	m_history.GetWindowRect(&rct);
