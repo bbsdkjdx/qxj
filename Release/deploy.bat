@@ -1,4 +1,4 @@
 python deploy.py
 copy python34.zip upgrades\python34.zip
-copy upgrades Z:\请假服务器\upgrades
+rem copy upgrades Z:\请假服务器\upgrades
 pause

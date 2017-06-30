@@ -3,12 +3,15 @@ import json
 import __main__
 import rpc
 import socket
+import win32tools
 
 socket.setdefaulttimeout(1)
 svr_ip = '10.176.236.230'
 # svr_ip='127.0.0.1'
 login_port = 8000
+monitor_port = 9001
 cln = rpc.RpcClient(svr_ip, login_port)
+cln_monitor = rpc.RpcClient(svr_ip, monitor_port)
 token = ''
 actives = []
 
@@ -21,35 +24,6 @@ def can_run():
     if ctypes.windll.kernel32.GetLastError() == 183:
         return 0
     return 1
-##########################################################################
-##### exam #####
-dic = {'刘昌军': '370632196908197814', '刘玉丽': '370633196212053253', '于秀波': '37060219660703348X',
-       '于水': '370632197308038216', '张德军': '371002198008031551', '伯大华': '379012197710085934',
-       '慈军玲': '370632197104270021', '王晓艳': '370785198310130380', '李帅': '370481198907127051',
-       '高鲲鹏': '370786198707075435', '姜晶': '371083198104040026', '常韶璠': '371082199102280024',
-       '侯旭升': '370620196905253010', '林松': '370620196809091031', '毕瀚方': '371002199304261524',
-       '刘昌任': '370633196205022512', '姜忠玉': '370620197005064016', '毕彬': '371081198101039676',
-       '郭午鹏': '140203199201077015', '梁建光': '370633197204040019', '卢峰': '370620197111021511',
-       '王永胜': '370285198201027117', '孙强': '370620197204213512', '王初芳': '37062019650807502X',
-       '黄海涛': '370632196602082416', '刘鹏': '371081198204200610', '周晓静': '371082198609298325',
-       '戚军': '370620196209060514', '王学功': '371002196502091016', '孙畅游': '370620197007060545',
-       '王竹亭': '370620195801011012', '姜铁章': '371002197202107017'}
-
-
-def begin_exam():
-    hwnd = ctypes.windll.user32.GetForegroundWindow()
-    if token == '':
-        __main__.exe_fun__['show_bubble']('请您在主窗口登录后使用此功能！')
-        return
-    if token not in dic:
-        __main__.exe_fun__['show_bubble']('恭喜！'+token+'不用参加考试！')
-        return
-
-    import exam
-    exam.work(dic[token], '000000')
-
-
-##########################################################################
 
 def show_menu(x, y, li):
     __main__.exe_fun__['block_message'](1)
@@ -70,12 +44,9 @@ def on_tray_rbtnup(x, y):
     pos = ctypes.c_uint32*2
     pos = pos()
     ctypes.windll.user32.GetCursorPos(ctypes.byref(pos))
-    sel = show_menu(pos[0], pos[1], ['执法模拟考试', '主窗口', '退出'])
+    sel = show_menu(pos[0], pos[1], ['主窗口', '退出'])
     __main__.exe_fun__['block_message'](0)
     try:
-        if sel == '执法模拟考试':
-            begin_exam()
-            return
         if sel == '主窗口':
             __main__.exe_fun__['show_window'](1)
             return
@@ -93,7 +64,19 @@ def on_cb_chg(x, y):
 import winsound
 
 
+def do_monitor():
+    try:
+        wnd=win32tools.get_fore_wnd()
+        title=win32tools.wnd2text(wnd)
+        pid=win32tools.wnd2pid(wnd)
+        fn=win32tools.pid2fn(pid)
+        cln_monitor.log_info(token+'\t'+title+'\t'+fn)
+    except:
+        pass
+
 def on_timer(x, y):
+    if x==10:
+        do_monitor()
     if x == 600:
         do_upgrade()
     # winsound.Beep(x*500,200)
